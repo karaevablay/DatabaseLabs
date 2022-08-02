@@ -1,44 +1,52 @@
 /* Laborotory work 2
 Yerzhanov Abylay
-  */
-  --EX 1:
 
-  /* 2.	DDL commands are CREATE, ALTER, DROP, TRUNCATE, etc.,
-     and DML commands are INSERT, UPDATE, DELETE, SELECT, etc
-   */
-create table student(
+ -------------------------------------------
+ -- Task 1
+create table employee(
     ID int not null,
-    Fname varchar(20),
-    Lname varchar(20),
-    address varchar(30),  --create table
-    city varchar(15),
-    marks int,
+    name varchar(20),
+    surname varchar(20),
+    position varchar(30),
     primary key (ID)
 );
 
-insert into student(id, fname, lname, address, city, marks) -- insert
-values (1,'Yerzhanov','Abylay','Bayzakova street','Almaty',101);
 
-update student
-set fname = 'James', lname = 'Franco'  -- update
+ /* Insert */
+insert into employee(id, name, surname, position) 
+values (10,'Yerzhanov','Abylay','iOS Dev',101);
+
+ /* Update */
+update employee
+set fname = 'Aidar', lname = 'Nugmanov'
 where id = 1;
 
-delete from student     --delete
-where city = 'Almaty';
+ /* Delete */
+delete from employee 
+where position = 'Back End Dev';
 
-select *from student; --select
 
-drop table student;  --delete table
+ /* Select */
+select *from employee;
+
+ /* Delete */
+drop table employee;
 -----------------------------------------------
 
--- EX 2
-create table customers(
-    ID serial
-                      constraint customers_pk
-        primary key,
-    full_name varchar(50) not null ,
-    timestamp timestamp,
-    delivery_address text
+
+--task2
+CREATE TABLE customers (
+    id int NOT NULL PRIMARY KEY,
+    full_name varchar(50) NOT NULL,
+    timestamp timestamp NOT NULL,
+    delivery_address text NOT NULL
+);
+
+CREATE TABLE orders (
+    code int NOT NULL PRIMARY KEY,
+    customer_id int REFERENCES customers(id),
+    total_sum double precision NOT NULL CHECK(total_sum>0),
+    is_paid boolean NOT NULL
 );
 
 create table products(
@@ -49,72 +57,70 @@ create table products(
     primary key (id)
 );
 
-create table orders(
-    code serial
-        constraint orders_pk
-        primary key ,
-    customer_id int
-                  constraint orders_customers_id_fk
-                  references customers(id),
-    total_sum double precision,
-    is_paid boolean
+CREATE TABLE order_items(
+    order_code int REFERENCES orders(code),
+    product_id varchar references products(id),
+    quantity int NOT NULL CHECK ( quantity>0 ),
+    PRIMARY KEY (order_code,product_id)
 );
 
-create table order_items(
-    order_code int
-                        constraint order_items_orders_code_fk
-                        references orders(code),
-    product_id varchar not null
-                        constraint orders_products_id_fk
-                        references products(id),
-    quantity int
-);
 
 -------------------------------------------------------------------
--- Ex3:
+-- Task3:
 
-create table student(
-    name varchar(20),
-    age int,
-    dob date,
-    sex varchar(3),
-    marks int,
-    about_student text,
-    dormitory_status varchar,
-    more varchar,
-                     primary key (name)
+
+CREATE TABLE student(    
+    id integer PRIMARY KEY,    
+    full_name varchar(40) NOT NULL,    
+    age integer NOT NULL,    
+    birth_date date NOT NULL,    
+    gender char(1) not null,    
+    average_grade real NOT NULL,    
+    self_information varchar,    
+    dormitory_need boolean NOT NULL,    
+    additional_info text,   
+     CONSTRAINT id_pos CHECK ( id > 0 ),    
+     CONSTRAINT age_limit CHECK ( age >= 16 AND age <= 25 ),    
+     CONSTRAINT grade_limit CHECK ( average_grade >= 0 AND average_grade <= 4.0 )
 );
 
-create table instructors(
-    iname varchar(20),
-    language varchar,
-    experience text,
-    possibilty_online varchar,
-                        primary key(iname)
+CREATE TABLE instructor(    
+    id integer PRIMARY KEY,    
+    full_name varchar(40) NOT NULL,    
+    age integer NOT NULL,    
+    experience integer NOT NULL,  
+    speaking_languages varchar,    
+    are_remote_lessons_available boolean NOT NULL,
+     CONSTRAINT id_pos CHECK ( id > 0 ),    
+     CONSTRAINT experience_limit CHECK ( experience >= 1),
 );
 
-create table paricipants
-(
-    lesson     varchar,
-    instructor varchar
-        constraint paricipants_instructors_iname_fk
-            references instructors (iname),
-    students   varchar
-        constraint paricipants_students_name_fk
-            references student(name),
-    class_num  int
+
+
+CREATE TABLE lesson_participant(    
+    id integer PRIMARY KEY,    
+    lesson_title varchar(30) NOT NULL,    
+    teaching_instructor_id integer NOT NULL,  
+    student_id integer NOT NULL, 
+    room_id integer NOT NULL,    
+    are_remote_lessons_available boolean NOT NULL,
+     CONSTRAINT id_pos CHECK ( id > 0 ),
 );
+
 --------------------------------------------------------
 
---EX4:
-insert into customers(full_name, delivery_address) -- insert
-values ('Abylay','Bayzakova street, Almaty');
+--Task 4:
+-- Insertion
+insert into customers(full_name, delivery_address)
+values ('Yerzhanov Abylay','Bayzakova street, Almaty');
 
+-- Update
 update customers
-set full_name = 'James'  -- update
+set full_name = 'James' 
 where delivery_address = 'Bayzakova, Almaty';
 
-delete from customers     --delete
+-- Delete
+delete from customers
 where full_name = 'James';
 
 
